@@ -1,7 +1,7 @@
 <?php
 // CONFIG
 $sheetName = 'Form Responses 1';
-$apiKey='AIzaSyCraZRanMgww2VdyBUv2Wp16K1QK0Sq_bc';
+$apiKey='';
 
 // Step 1: Get event_id from URL
 $eventId = isset($_GET['event_id']) ? intval($_GET['event_id']) : 0;
@@ -67,6 +67,7 @@ $conn->close();
 
 echo "✅ Sync complete. $updated attendee(s) marked as PAID for event ID $eventId.\n";
 ?>
+
 
 
 
