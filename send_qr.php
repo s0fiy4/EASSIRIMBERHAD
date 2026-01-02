@@ -56,7 +56,7 @@ try {
     $mail->Host = 'smtp.gmail.com'; // Replace with your SMTP
     $mail->SMTPAuth = true;
     $mail->Username = 'sofiyashukri022@gmail.com';
-    $mail->Password = 'wshf wpiv xbjd xpqr';
+    $mail->Password = '';
     $mail->SMTPSecure = 'tls';
     $mail->Port = 587;
 
@@ -73,3 +73,4 @@ try {
     echo "Message could not be sent. Mailer Error: {$mail->ErrorInfo}";
 }
 ?>
+
