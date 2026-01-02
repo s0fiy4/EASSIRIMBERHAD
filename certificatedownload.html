@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Certificate Download</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 font-sans">
+  <div class="min-h-screen flex items-center justify-center p-6">
+    <div class="bg-white rounded-lg shadow-lg p-8 w-full max-w-xl">
+      <h1 class="text-2xl font-semibold mb-6 text-center text-blue-800">🎓 Certificate Download Portal</h1>
+
+      <form action="generatecertfemail.php" method="POST" class="space-y-4">
+        <div>
+          <label for="eventId" class="block font-medium text-gray-700">Select Event</label>
+          <select id="eventId" name="event_id" class="w-full border border-gray-300 rounded px-3 py-2" required>
+          <option value="">Loading events...</option>
+          </select>
+        </div>
+
+        <div>
+          <label for="email" class="block font-medium text-gray-700">Enter your registered email</label>
+          <input type="email" id="email" name="email" class="w-full border border-gray-300 rounded px-3 py-2" required />
+        </div>
+
+        <div class="text-center">
+          <button type="submit" class="bg-blue-700 text-white px-6 py-2 rounded hover:bg-blue-800 transition">Download Certificate</button>
+        </div>
+      </form>
+
+      <div id="message" class="mt-6 text-center text-sm text-red-600 hidden">No certificate found for this email and event.</div>
+    </div>
+  </div>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+  const eventDropdown = document.getElementById('eventId');
+
+  fetch('fetchevents.php')
+    .then(response => response.json()) // 🔄 Parse as JSON
+    .then(events => {
+      eventDropdown.innerHTML = '<option value="">-- Select an event --</option>';
+      events.forEach(ev => {
+        const opt = document.createElement('option');
+        opt.value = ev.event_id;
+        opt.textContent = ev.event_name;
+        eventDropdown.appendChild(opt);
+      });
+    })
+    .catch(error => {
+      console.error('Error fetching events:', error);
+      eventDropdown.innerHTML = '<option value="">Failed to load events</option>';
+    });
+});
+</script>
+
+
+</body>
+
+</html>

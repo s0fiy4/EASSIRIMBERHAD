@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Monthly Dashboard</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+</head>
+<body class="bg-gray-100 font-[Poppins] min-h-screen">
+  <div class="flex">
+    <!-- Sidebar -->
+    <aside class="w-64 bg-[#002B5C] text-white min-h-screen p-6">
+      <div class="mb-8">
+        <img src="images/LOGOSIRIM.jpg" alt="Logo" class="w-10 mb-2" />
+        <h1 class="text-lg font-semibold">EVENT ATTENDANCE<br>SIRIM BERHAD</h1>
+      </div>
+      <nav class="space-y-3">
+        <a href="homepage.html" class="block px-3 py-2 rounded hover:bg-[#004080]">Homepage</a>
+        <a href="reportinganalytics.html" class="block px-3 py-2 rounded hover:bg-[#004080]">Reports</a>
+        <a href="logout.php" class="block px-3 py-2 rounded hover:bg-[#004080]">Logout</a>
+      </nav>
+    </aside>
+
+    <!-- Main Dashboard -->
+    <main class="flex-1 p-10">
+      <h2 class="text-3xl font-semibold mb-8">📊 Monthly Dashboard</h2>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
+        <div class="bg-white rounded-lg shadow p-5">
+          <p class="text-gray-500">Total Payments</p>
+          <h3 class="text-2xl font-bold text-green-600">RM 12,500</h3>
+        </div>
+        <div class="bg-white rounded-lg shadow p-5">
+          <p class="text-gray-500">Events Created</p>
+          <h3 class="text-2xl font-bold text-blue-600">15 Events</h3>
+        </div>
+        <div class="bg-white rounded-lg shadow p-5">
+          <p class="text-gray-500">Total Attendees</p>
+          <h3 class="text-2xl font-bold text-indigo-600">320 Attendees</h3>
+        </div>
+        <div class="bg-white rounded-lg shadow p-5">
+          <p class="text-gray-500">Avg. Attendance/Event</p>
+          <h3 class="text-2xl font-bold text-yellow-600">21.3</h3>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <!-- Payments Bar Chart -->
+        <div class="bg-white rounded-lg shadow p-6">
+          <h4 class="text-lg font-semibold mb-4">Monthly Payments Breakdown</h4>
+          <canvas id="paymentsChart" height="200"></canvas>
+        </div>
+
+        <!-- Location Pie Chart -->
+        <div class="bg-white rounded-lg shadow p-6">
+          <h4 class="text-lg font-semibold mb-4">Event Locations Distribution</h4>
+          <canvas id="locationsChart" height="200"></canvas>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <script>
+    // Payments Bar Chart
+    new Chart(document.getElementById('paymentsChart').getContext('2d'), {
+      type: 'bar',
+      data: {
+        labels: ['Week 1', 'Week 2', 'Week 3', 'Week 4'],
+        datasets: [{
+          label: 'RM Collected',
+          data: [3000, 2500, 4000, 3000],
+          backgroundColor: '#0ea5e9'
+        }]
+      },
+      options: {
+        responsive: true,
+        plugins: { legend: { display: false } }
+      }
+    });
+
+    // Locations Pie Chart
+    new Chart(document.getElementById('locationsChart').getContext('2d'), {
+      type: 'pie',
+      data: {
+        labels: ['Shah Alam', 'Penang', 'Kuala Lumpur', 'Melaka'],
+        datasets: [{
+          label: 'Event Count',
+          data: [6, 3, 4, 2],
+          backgroundColor: ['#6366f1', '#10b981', '#f59e0b', '#ef4444']
+        }]
+      },
+      options: {
+        responsive: true,
+      }
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LOGIN</title>
+    <link rel="icon" type="image/png" href="images/LOGOSIRIM.jpg" > <!-- Icon -->
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #ffffff; /* White background */
+        }
+        .login-container {
+            text-align: center;
+            width: 300px;
+            background: #ffffff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        .login-container img {
+            max-width: 50%;
+            height: auto;
+            margin-bottom: 20px;
+        }
+        h1, h2 {
+            margin: 0;
+            font-size: 18px;
+            color: #0047AB;
+        }
+        form {
+            margin-top: 20px;
+        }
+        label {
+            display: block;
+            text-align: left;
+            margin-bottom: 5px;
+            font-weight: bold;
+            font-size: 14px;
+        }
+        input {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+        input[type="submit"] {
+            background-color: #0047AB;
+            color: white;
+            font-weight: bold;
+            border: none;
+            cursor: pointer;
+        }
+        input[type="submit"]:hover {
+            background-color: #003580;
+        }
+        .register-link {
+            font-size: 12px;
+            color: #888;
+            margin: 10px 0;
+            display: block;
+        }
+        .register-link a {
+            color: #0047AB;
+            text-decoration: none;
+        }
+        .register-link a:hover {
+            text-decoration: underline;
+        }
+        .login-button {
+            width: 100%;
+            padding: 10px;
+            background-color: #e0e0e0;
+            color: black;
+            font-weight: bold;
+            border: 1px solid #ccc;
+            cursor: pointer;
+           margin-left:10px;
+        }
+        .register-button {
+            width: 100%;
+            padding: 10px;
+            background-color: #e0e0e0;
+            color: black;
+            font-weight: bold;
+            border: 1px solid #ccc;
+            cursor: pointer;
+            margin-left:10px;
+        }
+        .register-button:hover {
+            background-color: #d6d6d6;
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <img src="images/SIRIM_LOGO1.png" alt="SIRIM Logo">
+        <h1>EVENT ATTENDANCE SYSTEM</h1>
+        <h2>SIRIM BERHAD</h2>
+        <form action="login.php" method="POST">
+            <label for="username">Username or Email:</label>
+            <input type="text" id="username" name="username" placeholder="Enter username or email" required>
+            
+            <label for="password">Password:</label>
+            <input type="password" id="password" name="password" placeholder="Enter your password" required>
+            
+            <input type="submit" value="Login">
+        </form>
+        <div class="register-link">
+            Not a user? <a href="register.html">Click here to register</a>
+        </div>
+        <button class="register-button" onclick="register='register.html'">REGISTER</button>
+    </div>
+</body>
+</html>

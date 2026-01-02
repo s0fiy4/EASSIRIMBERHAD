@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VIEW REPORT</title>
+    <link rel="icon" type="image/png" href="images/LOGOSIRIM.jpg" > <!-- Icon -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script> <!-- Chart.js Library -->
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+        }
+
+        .container {
+            background: white;
+            padding: 30px 40px;
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+            width: 450px;
+            text-align: center;
+        }
+        
+
+        .sidebar {
+            background-color: #003366;
+            color: white;
+            width: 200px;
+            height: 105vh;
+            padding: 20px;
+        }
+
+        .sidebar img {
+            width: 40px; /* Adjust logo size */
+            margin-bottom: 20px;
+            margin-top: -70px;
+        }
+
+        .sidebar h2 {
+            font-size: 14px;
+            margin-bottom: 30px;
+            text-align: left;
+            margin-left:53px;
+        }
+
+        .sidebar a {
+            color: white;
+            text-decoration: none;
+            display: block;
+            margin-bottom: 15px;
+        }
+
+        .sidebar a:hover {
+            text-decoration: underline;
+        }
+
+        .logo-container {
+            display: flex;
+            align-items: left;
+            justify-content: left;
+            flex-direction: column;
+            margin-bottom: 20px;
+        }
+
+        .logo {
+            width: 20px;
+            margin-bottom: 5px;
+        }
+
+        .main-content {
+            flex-grow: 1;
+            padding: 20px;
+        }
+
+        .header {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+
+        .filter-section {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .filter-section label {
+            margin-right: 10px;
+        }
+
+        .filter-section input {
+            padding: 5px;
+            margin-right: 10px;
+            width: 150px;
+        }
+
+        .filter-section button {
+            background-color: #003366;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .filter-section button:hover {
+            background-color: #002244;
+        }
+
+        .report-section {
+            display: flex;
+            gap: 30px;
+            align-items: flex-start;
+        }
+
+
+        .tables-section {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+
+        table th, table td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+
+        table th {
+            background-color: #f4f4f4;
+            font-weight: bold;
+        }
+
+         canvas {
+            max-width: 100%;
+            height: auto;
+        }
+
+        .no-data {
+            color: #999;
+            margin-top: 20px;
+        }
+
+        .tables-section {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            width: 100%;
+        }
+
+        .tables-section .section {
+            background: #f9f9f9;
+            padding: 10px;
+            border-radius: 8px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+        }
+
+    </style>
+</head>
+<body>
+    <div class="sidebar">
+        <h2>EVENT ATTENDANCE<br>SIRIM BERHAD</h2>
+        <div class="logo-container">
+        <img src="images/LOGOSIRIM.jpg" alt="SIRIM Logo"> 
+        </div>
+        <a>MAIN</a>
+        <a href="homepage.html">HOMEPAGE</a>
+        <a href="logout.php">LOG OUT</a>
+    </div>
+
+    <div class="main-content">
+        <div class="header">REPORTING & ANALYTICS</div>
+        <h2>REPORTS</h2>
+
+        <div class="report-section">
+  <div class="container">
+    <h2>VIEW ATTENDANCE REPORT</h2>
+    <label for="eventSelect">Select Event:</label>
+    <select id="eventSelect">
+      <option value="">-- Select Event --</option>
+    </select>
+    <canvas id="attendanceChart" width="400" height="400"></canvas>
+    <p id="noDataMessage" class="no-data" style="display:none;">No attendance data found for this event.</p>
+    <div class="button-row">
+      <button onclick="printReport()">Print</button>
+      <button onclick="exportCSV()">Export CSV</button>
+    </div>
+  </div>
+
+  <div class="tables-section">
+    <div class="section">
+      <h3>PRESENT ATTENDEES</h3>
+      <table id="presentTable">
+        <thead><tr><th>NAME</th><th>EMAIL</th></tr></thead>
+        <tbody></tbody>
+      </table>
+    </div>
+
+    <div class="section">
+      <h3>ABSENT ATTENDEES</h3>
+      <table id="absentTable">
+        <thead><tr><th>NAME</th><th>EMAIL</th></tr></thead>
+        <tbody></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+  <script>
+    const dropdown = document.getElementById("eventSelect");
+    const ctx = document.getElementById("attendanceChart").getContext("2d");
+    let chart;
+
+    function fetchEvents() {
+      fetch("get_events_list.php")
+        .then(res => res.json())
+        .then(events => {
+          dropdown.innerHTML = '<option value="">-- Select Event --</option>';
+          events.forEach(ev => {
+            const option = document.createElement("option");
+            option.value = ev.event_id;
+            option.textContent = ev.event_name;
+            dropdown.appendChild(option);
+          });
+        });
+    }
+
+    function renderChart(present, absent) {
+      if (chart) chart.destroy();
+      chart = new Chart(ctx, {
+        type: "pie",
+        data: {
+          labels: ["Present", "Absent"],
+          datasets: [{
+            data: [present, absent],
+            backgroundColor: ["#28a745", "#dc3545"]
+          }]
+        },
+        options: {
+          responsive: true,
+          plugins: {
+            legend: { position: "bottom" }
+          }
+        }
+      });
+    }
+
+    function renderTable(data, tableId) {
+      const tbody = document.querySelector(`#${tableId} tbody`);
+      tbody.innerHTML = "";
+      data.forEach(row => {
+        const tr = document.createElement("tr");
+        tr.innerHTML = `<td>${row.attendee_name}</td><td>${row.email}</td>`;
+        tbody.appendChild(tr);
+      });
+    }
+
+    dropdown.addEventListener("change", () => {
+      const eventId = dropdown.value;
+      if (!eventId) return;
+      fetch(`get_attendance_report.php?event_id=${eventId}`)
+        .then(res => res.json())
+        .then(data => {
+          if (data.present_count === 0 && data.absent_count === 0) {
+            document.getElementById("noDataMessage").style.display = "block";
+          } else {
+            document.getElementById("noDataMessage").style.display = "none";
+          }
+          renderChart(data.present_count, data.absent_count);
+          renderTable(data.present_attendees, "presentTable");
+          renderTable(data.absent_attendees, "absentTable");
+        });
+    });
+
+    function printReport() {
+      window.print();
+    }
+
+    function exportCSV() {
+      const rows = [["Name", "Email", "Status"]];
+      document.querySelectorAll("#presentTable tbody tr").forEach(tr => {
+        const name = tr.children[0].textContent;
+        const email = tr.children[1].textContent;
+        rows.push([name, email, "Present"]);
+      });
+      document.querySelectorAll("#absentTable tbody tr").forEach(tr => {
+        const name = tr.children[0].textContent;
+        const email = tr.children[1].textContent;
+        rows.push([name, email, "Absent"]);
+      });
+
+      let csvContent = "data:text/csv;charset=utf-8," + rows.map(e => e.join(",")).join("\n");
+      const encodedUri = encodeURI(csvContent);
+      const link = document.createElement("a");
+      link.setAttribute("href", encodedUri);
+      link.setAttribute("download", "attendance_report.csv");
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    }
+
+    fetchEvents();
+
+    function openModal(content) {
+  document.getElementById("attendeeDetails").innerHTML = content;
+  document.getElementById("attendeeModal").style.display = "block";
+  document.getElementById("modalOverlay").style.display = "block";
+}
+
+function closeModal() {
+  document.getElementById("attendeeModal").style.display = "none";
+  document.getElementById("modalOverlay").style.display = "none";
+}
+
+
+function renderTable(data, tableId) {
+  const tbody = document.querySelector(`#${tableId} tbody`);
+  tbody.innerHTML = "";
+  data.forEach(row => {
+    const tr = document.createElement("tr");
+    tr.innerHTML = `<td>${row.attendee_name}</td><td>${row.email}</td>`;
+    tr.style.cursor = "pointer";
+    tr.onclick = () => {
+    const details = `
+      <strong>Name:</strong> ${row.attendee_name}<br>
+      <strong>Email:</strong> ${row.email}<br>
+      <strong>Company:</strong> ${row.company_name || 'N/A'}<br>
+      <strong>Position:</strong> ${row.position_attendee || 'N/A'}<br>
+      <strong>Phone:</strong> ${row.attendee_phonenum || 'N/A'}<br>
+      <strong>Department:</strong> ${row.dept_id || 'N/A'}<br>
+      <strong>Status:</strong> ${row.attendance_status || 'N/A'}<br>
+      <strong>Walk-in:</strong> ${row.is_walkin == 1 ? 'Yes' : 'No'}
+`;
+
+      openModal(details);
+    };
+    tbody.appendChild(tr);
+  });
+}
+
+
+  </script>
+
+  <div id="attendeeModal" style="
+  display: none;
+  position: fixed;
+  top: 20%;
+  left: 50%;
+  transform: translate(-50%, -20%);
+  background: white;
+  padding: 20px;
+  border: 1px solid #ccc;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+  z-index: 1000;
+  border-radius: 10px;
+">
+  <h3>Attendee Details</h3>
+  <p id="attendeeDetails"></p>
+  <button onclick="closeModal()">Close</button>
+</div>
+<div id="modalOverlay" style="
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0,0,0,0.5);
+  z-index: 999;
+" onclick="closeModal()"></div>
+
+</body>
+</html>

@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PAYMENT</title>
+    <link rel="icon" type="image/png" href="images/LOGOSIRIM.jpg" > <!-- Icon -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet" />
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+        }
+
+        .sidebar {
+            background-color: #003366;
+            color: white;
+            width: 200px;
+            height: 100vh;
+            padding: 20px;
+        }
+
+        .sidebar h2 {
+            margin-bottom: 30px;
+            text-align: left;
+            margin-left: 44px;
+            font-size:14px;
+        }
+
+        .sidebar a {
+            color: white;
+            text-decoration: none;
+            display: block;
+            margin-bottom: 15px;
+        }
+
+        .sidebar a:hover {
+            text-decoration: underline;
+        }
+
+        .main-content {
+            flex-grow: 1;
+            padding: 20px;
+        }
+
+        .logo-container {
+        display: flex;
+        align-items: left;
+        justify-content: left;
+        flex-direction: column; /* Stack logo and text vertically */
+        margin-bottom: 10px;
+    }
+
+        .logo {
+            width: 40px; /* Adjust width to fit your design */
+            height: auto;
+            margin-bottom: 5px;
+            margin-top:-75px;
+        }
+        .header {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+
+
+        .choose-event {
+            margin-bottom: 10px;
+        }
+
+        .choose-event button {
+            padding: 10px 20px;
+            background-color: #003366;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+
+        .choose-event button:hover {
+            background-color: #003366;
+        }
+
+        
+         /* Modal styles */
+         .modal {
+            display: none; /* Hidden by default */
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5); /* Black background with opacity */
+        }
+
+        .modal-content {
+            background-color: #fff;
+            margin: 10% auto; /* Centered vertically and horizontally */
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            width: 50%;
+            text-align: center;
+        }
+
+        .modal-header {
+            font-size: 20px;
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+
+        .close-button {
+            background-color: #dc3545;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            cursor: pointer;
+            float: right;
+            font-size: 18px;
+            margin-top: -20px;
+            margin-right: -10px;
+        }
+
+        .close-button:hover {
+            background-color: #a71d2a;
+        }
+
+        .modal-body button {
+            padding: 10px 20px;
+            background-color: #003366;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+
+        .modal-body button:hover {
+            background-color: #003366;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        table, th, td {
+            border: 1px solid #ddd;
+        }
+        th, td {
+            padding: 10px;
+            text-align: left;
+        }
+        th {
+            background-color: #f4f4f4;
+        }
+
+        #editModal {
+    z-index: 2000 !important;
+}
+
+    </style>
+</head>
+<body>
+<body class="font-[Poppins] min-h-screen flex bg-gray-100">
+  <!-- Sidebar -->
+  <aside class="w-64 bg-[#003366] text-white p-6 flex flex-col">
+    <div class="flex items-center mb-6">
+      <img src="images/LOGOSIRIM.jpg" alt="SIRIM Logo" class="w-10 h-10 mr-2" />
+      <h2 class="text-sm font-semibold leading-tight">EVENT ATTENDANCE<br>SIRIM BERHAD</h2>
+    </div>
+    <nav class="flex flex-col gap-4 mt-6">
+      <a href="#" class="hover:underline">MAIN</a>
+      <a href="homepage.html" class="hover:underline">HOMEPAGE</a>
+      <a href="logout.php" class="hover:underline">LOG OUT</a>
+    </nav>
+  </aside>
+
+    <div class="main-content">
+        <div class="header" id="pageHeader"> PAYMENT</div>
+
+
+<div class="choose-event">
+    <button id="chooseEventButton">CHOOSE EVENT</button>
+</div> 
+
+
+    <!-- Table to display attendees -->
+    <table id="attendeeTable" style="display: none;">
+        <thead>
+            <tr>
+                <th>ATTENDEE ID</th>
+                <th>NAME</th>
+                <th>AMOUNT(RM)</th>
+                <th>PAYMENT STATUS</th>
+                <th>PAYMENT DATE</th>
+                 <th>RECEIPT</th>
+                <th>TOOLS</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- Rows will be dynamically inserted -->
+        </tbody>
+    </table>
+
+     <!-- Modal -->
+     <div id="eventModal" class="modal">
+        <div class="modal-content">
+            <button class="close-button" id="closeModalButton">&times;</button>
+            <div class="modal-header">Select an Event</div>
+            <div class="modal-body">
+            <p>Please choose an event:</p>
+            <div id="eventListContainer">
+            <!-- Event buttons will be added here dynamically -->
+         </div>
+        </div>
+    </div>
+
+
+    <!-- Edit Modal -->
+<div id="editModal" class="modal">
+  <div class="modal-content">
+    <button class="close-button" id="closeEditModal">&times;</button>
+    <div class="modal-header">Edit Attendee</div>
+    <div class="modal-body">
+      <form id="editForm">
+        <input type="hidden" id="editEventId">
+        <input type="hidden" id="editAttendeeId">
+
+        <div>
+          <label>Name:</label><br>
+          <input type="text" id="editName" required>
+        </div><br>
+
+        <div>
+          <label>Payment Status:</label><br>
+          <select id="editStatus" required>
+            <option value="Paid">Paid</option>
+            <option value="Unpaid">Unpaid</option>
+          </select>
+        </div><br>
+
+        <div>
+          <label>Payment Date:</label><br>
+          <input type="date" id="editDate">
+        </div><br>
+
+        <button type="submit">Update</button>
+      </form>
+    </div>
+  </div>
+</div>
+
+
+
+<script>
+  // DOM references
+  const chooseEventButton = document.getElementById('chooseEventButton');
+  const modal = document.getElementById('eventModal');
+  const closeModalButton = document.getElementById('closeModalButton');
+  const pageHeader = document.getElementById('pageHeader');
+  const attendeeTable = document.getElementById('attendeeTable');
+  const tableBody = attendeeTable.querySelector('tbody');
+  const eventListContainer = document.getElementById('eventListContainer');
+
+  const closeEditModal = document.getElementById('closeEditModal');
+  const editForm = document.getElementById('editForm');
+  const editEventId = document.getElementById('editEventId');
+  const editAttendeeId = document.getElementById('editAttendeeId');
+  const editName = document.getElementById('editName');
+  const editStatus = document.getElementById('editStatus');
+  const editDate = document.getElementById('editDate');
+  const editModal = document.getElementById('editModal'); 
+
+
+  // Open event modal
+  chooseEventButton.addEventListener('click', () => {
+    loadEventList();
+    modal.style.display = 'block';
+  });
+
+  // Close modals
+  closeModalButton.onclick = () => (modal.style.display = 'none');
+  closeEditModal.onclick = () => (editModal.style.display = 'none');
+
+  window.addEventListener('click', (e) => {
+    if (e.target === modal) modal.style.display = 'none';
+    if (e.target === editModal) editModal.style.display = 'none';
+  });
+
+  // Enable/disable date input based on status
+  editStatus.addEventListener('change', () => {
+    editDate.disabled = editStatus.value !== 'Paid';
+  });
+
+  // Fetch all events and populate event list
+  function loadEventList() {
+    fetch('get_all_events.php')
+      .then(res => res.json())
+      .then(events => {
+        eventListContainer.innerHTML = '';
+        events.forEach(event => {
+          const btn = document.createElement('button');
+          btn.className = 'event-option';
+          btn.textContent = event.event_name;
+          btn.dataset.eventId = event.event_id;
+          btn.onclick = () => {
+            loadEventAttendees(event.event_id, event.event_name);
+            modal.style.display = 'none';
+          };
+          eventListContainer.appendChild(btn);
+        });
+      })
+      .catch(() => alert('Failed to load events.'));
+  }
+
+  // Fetch attendees for an event and display in table
+  function loadEventAttendees(eventId, eventName = '') {
+    fetch(`get_events_attendees.php?event_id=${eventId}`)
+      .then(res => res.json())
+      .then(data => {
+        if (data.error) return alert(data.error);
+
+        pageHeader.textContent = `Event: ${eventName || eventId}`;
+        tableBody.innerHTML = '';
+
+        const { payment_required, payment_amount, attendees } = data;
+        const amountText = payment_required ? `RM ${parseFloat(payment_amount).toFixed(2)}` : 'Free';
+
+        attendees.forEach(attendee => {
+          const row = document.createElement('tr');
+
+          // ID cell
+          const idCell = document.createElement('td');
+          idCell.textContent = attendee.attendee_id;
+
+          // Name cell
+          const nameCell = document.createElement('td');
+          nameCell.textContent = attendee.attendee_name;
+
+          // Amount cell
+          const amountCell = document.createElement('td');
+          amountCell.textContent = amountText;
+
+          // Status cell
+          const statusCell = document.createElement('td');
+          const statusSpan = document.createElement('span');
+          statusSpan.textContent = attendee.payment_status || 'Unpaid';
+          statusSpan.style.color = (attendee.payment_status === 'Paid') ? 'green' : 'red';
+          statusSpan.style.fontWeight = 'bold';
+          statusSpan.setAttribute('data-status', attendee.payment_status || 'Unpaid');
+          statusCell.appendChild(statusSpan);
+
+          // Date cell
+          const dateCell = document.createElement('td');
+          dateCell.textContent = attendee.payment_date || '-';
+
+           // Receipt cell
+          const receiptCell = document.createElement('td');
+
+          if (attendee.receipt) {
+           const link = document.createElement('a');
+          link.href = attendee.receipt;
+          link.target = "https://drive.google.com/drive/folders/1moByGaVUZLeXpt6fVve2lF3JFNdPksh5?usp=drive_link"; 
+          link.textContent = "View";
+          link.style.color = "#1D4ED8";
+          link.style.textDecoration = "underline";
+          receiptCell.appendChild(link);
+          } else {
+          receiptCell.textContent = '-';
+          }
+
+          // Tools cell (Edit and Delete buttons)
+          const toolsCell = document.createElement('td');
+          const editBtn = document.createElement('button');
+          editBtn.textContent = 'Edit';
+          
+          editBtn.className = 'edit-btn';
+          editBtn.onclick = () => {
+            // Populate edit modal form values
+            editEventId.value = eventId;
+            editAttendeeId.value = attendee.attendee_id;
+            editName.value = attendee.attendee_name;
+            const status = attendee.payment_status || 'Unpaid';
+            editStatus.value = status;
+
+            editDate.value = attendee.payment_date
+              ? new Date(attendee.payment_date).toISOString().split('T')[0]
+              : '';
+            editDate.disabled = status !== 'Paid';
+
+            editModal.style.display = 'block';
+          };
+
+          const deleteBtn = document.createElement('button');
+          deleteBtn.textContent = 'Delete';
+          deleteBtn.onclick = () => deleteAttendee(eventId, attendee.attendee_id);
+
+          toolsCell.appendChild(editBtn);
+          toolsCell.appendChild(deleteBtn);
+
+          [idCell, nameCell, amountCell, statusCell, dateCell, receiptCell, toolsCell].forEach(cell => row.appendChild(cell));
+          tableBody.appendChild(row);
+        });
+
+        attendeeTable.style.display = 'table';
+      })
+      .catch(() => alert('Failed to load attendees.'));
+  }
+
+  // Handle form submit to update attendee payment info
+  editForm.addEventListener('submit', function (e) {
+    e.preventDefault();
+
+    const payload = {
+      attendee_id: editAttendeeId.value,
+      event_id: editEventId.value,
+      attendee_name: editName.value,
+      payment_status: editStatus.value,
+      payment_date: editStatus.value === 'Paid' ? editDate.value : ''
+    };
+
+    if (payload.payment_status === 'Paid' && !payload.payment_date) {
+      alert('Payment date is required for Paid status.');
+      return;
+    }
+
+    fetch('update_attendee_payment.php', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    })
+      .then(res => res.json())
+      .then(response => {
+        if (response.success) {
+          alert('Update successful');
+          editModal.style.display = 'none';
+          loadEventAttendees(payload.event_id);
+        } else {
+          alert('Update failed: ' + (response.message || 'Unknown error'));
+        }
+      })
+      .catch(() => alert('Network error: update failed'));
+  });
+
+  // Delete attendee handler
+  function deleteAttendee(eventId, attendeeId) {
+    if (!confirm(`Are you sure you want to delete attendee ${attendeeId}?`)) return;
+
+    fetch('delete_attendee.php', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ event_id: eventId, attendee_id: attendeeId })
+    })
+      .then(res => res.json())
+      .then(response => {
+        if (response.success) {
+          alert('Deleted successfully');
+          loadEventAttendees(eventId);
+        } else {
+          alert('Delete failed: ' + (response.message || 'Unknown error'));
+        }
+      })
+      .catch(() => alert('Network error: delete failed'));
+  }
+</script>
+
+
+</body>
+</html>

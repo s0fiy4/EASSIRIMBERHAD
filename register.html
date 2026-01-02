@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>REGISTER</title>
+    <link rel="icon" type="image/png" href="images/LOGOSIRIM.jpg" > <!-- Icon -->
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #ffffff;
+        }
+        .register-container {
+            text-align: center;
+            width: 310px;
+            background: #ffffff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        .register-container img {
+            max-width: 50%;
+            height: auto;
+        }
+        h1 {
+            font-size: 24px;
+            color: #0047AB;
+            margin: 0 0 10px;
+        }
+        label {
+            display: block;
+            text-align: left;
+            margin-bottom: 5px;
+            font-weight: bold;
+            font-size: 14px;
+        }
+        input {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+        input[type="submit"] {
+            background-color: #0047AB;
+            color: white;
+            font-weight: bold;
+            border: none;
+            cursor: pointer;
+        }
+        input[type="submit"]:hover {
+            background-color: #003580;
+        }
+        .note {
+            font-size: 12px;
+            color: #888;
+            text-align: left;
+            margin-bottom: 10px;
+        }
+        .register-button {
+            width: 100%;
+            padding: 10px;
+            background-color: #e0e0e0;
+            color: black;
+            font-weight: bold;
+            border: 1px solid #ccc;
+            cursor: pointer;
+            margin-left:10px;
+        }
+        .register-button:hover {
+            background-color: #d6d6d6;
+        }
+    </style>
+</head>
+<body>
+    <div class="register-container">
+        <img src="images/LOGOSIRIM.jpg" alt="SIRIM Logo">
+        <h1>EVENT ATTENDANCE SYSTEM</h1>
+        <h1>SIRIM BERHAD</h1>
+        <form action="registeruser.php" method="POST">
+            <label for="user-name">USERNAME:</label>
+            <input type="text" id="username" name="username" required>
+            <label for="phone">PHONE NUMBER:</label>
+            <input type="tel" id="phone" name="phone" required>
+            <label for="email">EMAIL ADDRESS:</label>
+            <input type="email" id="email" name="email" required>
+            <label for="password">PASSWORD:</label>
+            <input type="password" id="password" name="password" placeholder="Must be more than 8 characters" required>
+            <button type="submit">REGISTER</button>
+        </form>
+    </div>
+</body>
+</html>

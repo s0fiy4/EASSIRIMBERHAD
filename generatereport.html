@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EVENT ATTENDANCE REPORT - SIRIM</title>
+    <link rel="icon" type="image/png" href="images/LOGOSIRIM.jpg" > <!-- Icon -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet" />
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+        }
+
+        .sidebar {
+            background-color: #003366;
+            color: white;
+            width: 200px;
+            height: 100vh;
+            padding: 20px;
+        }
+
+        .sidebar img {
+            width: 40px; /* Adjust logo size */
+            margin-bottom: 20px;
+            margin-top: -70px;
+        }
+
+        .sidebar h2 {
+            font-size: 14px;
+            margin-bottom: 30px;
+            text-align: left;
+            margin-left:53px;
+        }
+
+        .sidebar a {
+            color: white;
+            text-decoration: none;
+            display: block;
+            margin-bottom: 15px;
+        }
+
+        .sidebar a:hover {
+            text-decoration: underline;
+        }
+
+        .logo-container {
+            display: flex;
+            align-items: left;
+            justify-content: left;
+            flex-direction: column;
+            margin-bottom: 20px;
+        }
+
+        .logo {
+            width: 20px;
+            margin-bottom: 5px;
+        }
+
+        .main-content {
+            flex-grow: 1;
+            padding: 20px;
+        }
+
+        .header {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+
+        .filter-section {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .filter-section label {
+            margin-right: 10px;
+        }
+
+        .filter-section input {
+            padding: 5px;
+            margin-right: 10px;
+            width: 150px;
+        }
+
+        .filter-section button {
+            background-color: #003366;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            cursor: pointer;
+            font-size: 14px;
+            margin-right:10px;
+            margin-left: 10px; 
+        }
+
+        .filter-section button:hover {
+            background-color: #002244;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+
+        table th, table td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+
+        table th {
+            background-color: #f4f4f4;
+            font-weight: bold;
+        }
+
+            /* Print only the table area */
+    @media print {
+      body * {
+        visibility: hidden;
+      }
+
+      #printable-area, #printable-area * {
+        visibility: visible;
+      }
+
+      #printable-area {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+      }
+    }
+    </style>
+</head>
+<body>
+<body class="font-[Poppins] min-h-screen flex bg-gray-100">
+  <!-- Sidebar -->
+  <aside class="w-64 bg-[#003366] text-white p-6 flex flex-col">
+    <div class="flex items-center mb-6">
+      <img src="images/LOGOSIRIM.jpg" alt="SIRIM Logo" class="w-10 h-10 mr-2" />
+      <h2 class="text-sm font-semibold leading-tight">EVENT ATTENDANCE<br>SIRIM BERHAD</h2>
+    </div>
+    <nav class="flex flex-col gap-4 mt-6">
+      <a href="#" class="hover:underline">MAIN</a>
+      <a href="homepage.html" class="hover:underline">HOMEPAGE</a>
+      <a href="logout.php" class="hover:underline">LOG OUT</a>
+    </nav>
+  </aside>
+
+    <div class="main-content">
+    <div class="header">REPORTING & ANALYTICS</div>
+
+    <div class="filter-section">
+      <label for="eventSelect">Select Event:</label>
+      <select id="eventSelect">
+        <option value="">-- Select Event --</option>
+      </select>
+      <button onclick="printReport()">PRINT REPORT</button>
+    </div>
+
+    <div id="printable-area">
+      <div id="print-header" style="margin-bottom: 20px;">
+        <div style="display: flex; align-items: center; gap: 15px;">
+          <img src="images/LOGOSIRIM.jpg" alt="SIRIM Logo" style="height: 60px;" />
+          <div>
+            <h2 style="margin: 0;">SIRIM BERHAD</h2>
+            <h3 style="margin: 0;">EVENT ATTENDANCE REPORT</h3>
+          </div>
+        </div>
+        <p><strong>Event:</strong> <span id="eventNameDisplay">-</span></p>
+        <p><strong>Generated at:</strong> <span id="generatedTime">-</span></p>
+        <p><strong>Summary:</strong> <span id="attendanceSummary">-</span></p>
+        <div id="summaryDetails" style="margin-top: 10px;">
+        <p><strong>Total Attendees:</strong> <span id="totalAttendees">0</span></p>
+        <p><strong>Percentage Present:</strong> <span id="percentPresent">0%</span></p>
+        <div id="companyBreakdown">
+        <p><strong>Breakdown by Company:</strong></p>
+        <ul id="companyList"></ul>
+    </div>
+</div>
+      </div>
+
+       <div id="presentTableContainer"></div>
+      <div id="absentTableContainer" style="margin-top: 30px;"></div>
+    </div>
+  </div>
+
+  <footer class="text-center text-xs text-gray-500 mt-10 hidden print:block">
+  Printed from SIRIM Event Attendance System — Page 1 of 1
+</footer>
+
+ <script>
+  let currentEventId = null;
+
+    document.addEventListener("DOMContentLoaded", () => {
+      fetch("get_events_list.php")
+        .then(res => res.json())
+        .then(events => {
+          const dropdown = document.getElementById("eventSelect");
+          events.forEach(event => {
+            const opt = document.createElement("option");
+            opt.value = event.event_id;
+            opt.textContent = event.event_name;
+            dropdown.appendChild(opt);
+          });
+        });
+
+      document.getElementById("eventSelect").addEventListener("change", function () {
+        const eventId = this.value;
+        if (!eventId) return;
+
+        currentEventId = eventId;
+        const eventName = this.options[this.selectedIndex].textContent;
+        document.getElementById("eventNameDisplay").textContent = eventName;
+        document.title = `Attendance Report - ${eventName}`; 
+
+        fetch(`generatereport.php?event_id=${eventId}`)
+          .then(res => res.json())
+          .then(data => {
+            const presentTable = document.createElement("table");
+            const absentTable = document.createElement("table");
+            presentTable.innerHTML = `<thead><tr><th>NAME</th><th>POSITION</th><th>COMPANY</th><th>PHONE</th><th>CHECK-IN TIME</th></tr></thead><tbody></tbody>`;
+            absentTable.innerHTML = `<thead><tr><th>NAME</th><th>POSITION</th><th>COMPANY</th><th>PHONE</th><th>CHECK-IN TIME</th></tr></thead><tbody></tbody>`;
+
+            let presentCount = 0;
+            let absentCount = 0;
+            let companyCounts = {};
+
+            data.forEach(row => {
+              const tr = document.createElement("tr");
+              tr.innerHTML = `
+                <td>${row.attendee_name}</td>
+                <td>${row.position_attendee || '-'}</td>
+                <td>${row.company_name || '-'}</td>
+                <td>${row.attendee_phonenum || '-'}</td>
+                <td>${row.attendance_time || '-'}</td>`;
+
+              const company = row.company_name || 'Unknown';
+              companyCounts[company] = (companyCounts[company] || 0) + 1;
+
+              if (row.status === "Present") {
+                presentTable.querySelector("tbody").appendChild(tr);
+                presentCount++;
+              } else {
+                absentTable.querySelector("tbody").appendChild(tr);
+                absentCount++;
+              }
+            });
+
+            const totalAttendees = data.length;
+            const percentagePresent = totalAttendees > 0 ? ((presentCount / totalAttendees) * 100).toFixed(2) : 0;
+
+            document.getElementById("attendanceSummary").textContent = `Present: ${presentCount}, Absent: ${absentCount}`;
+            document.getElementById("totalAttendees").textContent = totalAttendees;
+            document.getElementById("percentPresent").textContent = `${percentagePresent}%`;
+
+            const companyList = document.getElementById("companyList");
+            companyList.innerHTML = "";
+            for (const company in companyCounts) {
+              const li = document.createElement("li");
+              li.textContent = `${company}: ${companyCounts[company]} attendee(s)`;
+              companyList.appendChild(li);
+            }
+
+            document.getElementById("generatedTime").textContent = new Date().toLocaleString();
+
+            document.getElementById("presentTableContainer").innerHTML = `<h3 style='color:green'>✅ Present Attendees (${presentCount})</h3>`;
+            document.getElementById("presentTableContainer").appendChild(presentTable);
+
+            document.getElementById("absentTableContainer").innerHTML = `<h3 style='color:red'>❌ Absent Attendees (${absentCount})</h3>`;
+            document.getElementById("absentTableContainer").appendChild(absentTable);
+
+          });
+      });
+    });
+
+    function printReport() {
+      document.getElementById("generatedTime").textContent = new Date().toLocaleString();
+      window.print();
+    }
+  </script>
+</body>
+</html>

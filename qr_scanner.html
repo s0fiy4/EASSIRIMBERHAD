@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Scan QR Code for Attendance</title>
+    <script src="https://unpkg.com/html5-qrcode"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f0f2f5;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 40px;
+        }
+        h2 {
+            color: #333;
+        }
+        #reader {
+            width: 320px;
+            margin-top: 20px;
+        }
+        #message {
+            margin-top: 20px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <h2>Scan QR Code to Mark Attendance</h2>
+    <div id="reader"></div>
+    <div id="message"></div>
+
+    <script>
+        // Get event_id from URL
+        const params = new URLSearchParams(window.location.search);
+        const currentEventId = params.get("event_id");
+
+        if (!currentEventId) {
+            document.getElementById("message").innerText = "Missing event ID. Please start from the attendance page.";
+        }
+
+        function onScanSuccess(decodedText, decodedResult) {
+            console.log("Decoded text:", decodedText);
+            document.getElementById('message').innerText = "QR code detected! Redirecting...";
+
+            try {
+                const url = new URL(decodedText);
+                const email = url.searchParams.get("email");
+                const eventFromQR = url.searchParams.get("event_id");
+
+                if (email) {
+                    // Redirect back to attendancerecording.html with both event and email
+                    const redirectUrl = `attendancerecording.html?event_id=${currentEventId}&email=${encodeURIComponent(email)}`;
+                    window.location.href = redirectUrl;
+                } else {
+                    document.getElementById('message').innerText = "QR code does not contain an email.";
+                }
+            } catch (e) {
+                document.getElementById('message').innerText = "Invalid QR code format.";
+            }
+        }
+
+        function onScanFailure(error) {
+            console.warn(`QR scan failed: ${error}`);
+        }
+
+        let scanner = new Html5QrcodeScanner("reader", {
+            fps: 10,
+            qrbox: 250
+        });
+
+        scanner.render(onScanSuccess, onScanFailure);
+    </script>
+
+</body>
+</html>

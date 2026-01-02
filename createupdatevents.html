@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>CREATE AND UPDATE EVENTS</title>
+  <link rel="icon" type="image/png" href="images/LOGOSIRIM.jpg" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet" />
+</head>
+
+<body class="bg-gray-100 font-[Poppins] min-h-screen">
+  <div class="flex">
+    <!-- Sidebar -->
+    <aside class="w-64 bg-[#002B5C] text-white min-h-screen p-6">
+      <div class="mb-8">
+        <img src="images/LOGOSIRIM.jpg" alt="Logo" class="w-10 mb-2" />
+        <h1 class="text-lg font-semibold">EVENT ATTENDANCE<br>SIRIM BERHAD</h1>
+      </div>
+      <nav class="space-y-3">
+        <a href="#" class="block px-3 py-2 rounded hover:bg-[#004080]">MAIN</a>
+        <a href="homepage.html" class="block px-3 py-2 rounded hover:bg-[#004080]">HOMEPAGE</a>
+        <a href="logout.php" class="block px-3 py-2 rounded hover:bg-[#004080]">LOGOUT</a>
+      </nav>
+    </aside>
+
+  <!-- Main Content -->
+  <main class="flex-1 p-8">
+    <div class="max-w-7xl mx-auto">
+      <h1 class="text-2xl font-semibold mb-6">CREATE & UPDATE EVENTS</h1>
+      <button id="openModal" class="bg-[#002B5C] text-white px-4 py-2 rounded hover:bg-[#003366] mb-6">
+        + ADD A NEW EVENT
+      </button>
+
+      <div class="flex flex-wrap gap-4 mb-6">
+        <input type="text" id="searchInput" placeholder="Search by name, location, or organizer"
+          class="border border-gray-300 rounded px-3 py-2 w-full md:w-1/3" />
+        <input type="date" id="filterStartDate" class="border border-gray-300 rounded px-3 py-2 w-full md:w-1/6" />
+        <input type="date" id="filterEndDate" class="border border-gray-300 rounded px-3 py-2 w-full md:w-1/6" />
+      </div>
+
+      <div class="overflow-x-auto bg-white rounded shadow">
+        <table class="min-w-full text-sm text-left">
+          <thead class="bg-gray-100">
+            <tr>
+              <th class="px-4 py-3">ID</th>
+              <th class="px-4 py-3">EVENT NAME</th>
+              <th class="px-4 py-3">GOOGLE FORM</th>
+              <th class="px-4 py-3">DATE</th>
+              <th class="px-4 py-3">LOCATION</th>
+              <th class="px-4 py-3">CAPACITY</th>
+              <th class="px-4 py-3">FEE (RM)</th>
+              <th class="px-4 py-3">ORGANIZER</th>
+              <th class="px-4 py-3">TOOLS</th>
+            </tr>
+          </thead>
+          <tbody id="eventTableBody" class="divide-y divide-gray-200">
+            <!-- Events will be loaded here -->
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </main>
+
+<!-- Modal -->
+<div id="modal" class="fixed inset-0 bg-black bg-opacity-50 hidden z-50 flex items-center justify-center overflow-y-auto">
+  <!-- Modal Content -->
+  <div class="bg-white rounded-lg shadow-lg p-8 w-full max-w-2xl mx-auto relative">
+    <h2 class="text-xl font-semibold mb-4" id="modalTitle">ADD NEW EVENT </h2>
+    <form id="eventForm" class="space-y-4" method="POST" action="update_event.php">
+      <input type="hidden" id="event_id" name="event_id">
+      <div>
+        <label class="font-semibold">Event Name</label>
+        <input type="text" name="event_name" required class="w-full border px-3 py-2 rounded">
+      </div>
+      <div>
+        <label class="font-semibold">Google Form Link</label>
+        <input type="url" name="google_form" id="google_form" required class="w-full border px-3 py-2 rounded">
+        <div id="qrPreview" class="mt-2"></div>
+      </div>
+      <div>
+        <label class="font-semibold">Google Sheet Link</label>
+        <input type="url" id="sheetUrl" required class="w-full border px-3 py-2 rounded">
+        <input type="hidden" name="sheet_id" id="sheet_id">
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div>
+          <label class="font-semibold">Start Date</label>
+          <input type="date" name="eventStartDate" required class="w-full border px-3 py-2 rounded">
+        </div>
+        <div>
+          <label class="font-semibold">End Date</label>
+          <input type="date" name="eventEndDate" required class="w-full border px-3 py-2 rounded">
+        </div>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div>
+          <label class="font-semibold">Location</label>
+          <input type="text" name="location" required class="w-full border px-3 py-2 rounded">
+        </div>
+        <div>
+          <label class="font-semibold">Capacity</label>
+          <input type="number" name="capacity" required class="w-full border px-3 py-2 rounded">
+        </div>
+      </div>
+      <div>
+        <label class="font-semibold">Organized By</label>
+        <input type="text" name="organizedBy" required class="w-full border px-3 py-2 rounded">
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+  <div>
+    <label class="font-semibold">Payment Required</label>
+    <select name="payment_required" id="payment_required" required class="w-full border px-3 py-2 rounded">
+      <option value="0">No</option>
+      <option value="1">Yes</option>
+    </select>
+  </div>
+  <div>
+    <label class="font-semibold">Payment Amount (RM)</label>
+    <input type="number" name="payment_amount" id="payment_amount" step="0.01" min="0" class="w-full border px-3 py-2 rounded" disabled>
+  </div>
+</div>
+      <div class="flex justify-end gap-4 mt-6">
+        <button type="submit" class="bg-[#002B5C] text-white px-4 py-2 rounded hover:bg-[#003366]">
+          Save
+        </button>
+        <button type="button" id="closeModal" class="bg-gray-300 px-4 py-2 rounded hover:bg-gray-400">
+          Cancel
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  const modal = document.getElementById('modal');
+  const openModal = document.getElementById('openModal');
+  const closeModal = document.getElementById('closeModal');
+  const form = document.getElementById('eventForm');
+  const tableBody = document.getElementById('eventTableBody');
+  const sheetInput = document.getElementById('sheetUrl');
+  const sheetId = document.getElementById('sheet_id');
+  const searchInput = document.getElementById('searchInput');
+  const startFilter = document.getElementById('filterStartDate');
+  const endFilter = document.getElementById('filterEndDate');
+  const qrInput = document.getElementById('google_form');
+  const paymentRequired = document.getElementById('payment_required');
+  const paymentAmount = document.getElementById('payment_amount');
+
+  function applyFilters(events) {
+    const query = searchInput.value.toLowerCase();
+    const startDate = new Date(startFilter.value || '2000-01-01');
+    const endDate = new Date(endFilter.value || '2100-12-31');
+
+    return events.filter(e => {
+      const matchText = e.event_name.toLowerCase().includes(query) ||
+                        e.event_location.toLowerCase().includes(query) ||
+                        e.organized_by.toLowerCase().includes(query);
+      const eventDate = new Date(e.event_start_date);
+      return matchText && eventDate >= startDate && eventDate <= endDate;
+    });
+  }
+
+    paymentRequired.addEventListener('change', () => {
+  if (paymentRequired.value === '1') {
+    paymentAmount.disabled = false;
+    paymentAmount.required = true;
+  } else {
+    paymentAmount.disabled = true;
+    paymentAmount.value = '';
+    paymentAmount.required = false;
+  }
+  });
+
+  function loadEvents() {
+    fetch('fetchevents.php')
+      .then(res => res.json())
+      .then(events => {
+        console.log('Loaded events:', events); // for debugging
+        const filtered = applyFilters(events);
+        tableBody.innerHTML = '';
+        filtered.forEach(event => {
+          const tr = document.createElement('tr');
+          tr.innerHTML = `
+            <td>${event.event_id}</td>
+            <td>${event.event_name}</td>
+            <td><a href="${event.google_form_link}" target="_blank">Google Form</a></td>
+            <td>${event.event_start_date}</td>
+            <td>${event.event_location}</td>
+            <td>${event.event_capacity}</td>
+            <td>RM ${parseFloat(event.payment_amount).toFixed(2)}</td>
+            <td>${event.organized_by}</td>
+            <td>
+              <button class="btn-edit bg-blue-700 text-white px-2 py-1 rounded" data-id="${event.event_id}">Edit</button>
+              <button class="btn-delete bg-red-600 text-white px-2 py-1 rounded ml-2" data-id="${event.event_id}">Delete</button>
+            </td>
+          `;
+          tableBody.appendChild(tr);
+
+          // Edit event
+          tr.querySelector('.btn-edit').addEventListener('click', () => {
+            document.getElementById('event_id').value = event.event_id;
+            form.event_name.value = event.event_name;
+            form.google_form.value = event.google_form_link;
+            sheetId.value = event.google_sheet_id;
+            sheetInput.value = `https://docs.google.com/spreadsheets/d/${event.google_sheet_id}`;
+            form.eventStartDate.value = event.eventStartDate;
+            form.eventEndDate.value = event.eventEndDate;
+            form.location.value = event.location;
+            form.capacity.value = event.capacity;
+            form.organizedBy.value = event.organized_by;
+            modal.style.display = 'block';
+            form.payment_required.value = event.payment_required;
+form.payment_amount.value = event.payment_amount;
+
+if (event.payment_required == "1") {
+  paymentAmount.disabled = false;
+  paymentAmount.required = true;
+} else {
+  paymentAmount.disabled = true;
+  paymentAmount.required = false;
+}
+          });
+
+          // Delete event
+          tr.querySelector('.btn-delete').addEventListener('click', () => {
+            if (confirm('Delete this event?')) {
+              fetch('deleteevent.php', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ event_id: event.event_id })
+              })
+              .then(res => res.json())
+              .then(result => {
+                alert(result.message);
+                if (result.success) loadEvents();
+              });
+            }
+          });
+        });
+      })
+      .catch(error => {
+        console.error('Failed to load events:', error);
+      });
+  }
+
+  openModal.onclick = () => {
+    form.reset();
+    document.getElementById('event_id').value = '';
+    document.getElementById('qrPreview').innerHTML = '';
+    modal.style.display = 'block';
+  };
+
+  closeModal.onclick = () => {
+    modal.style.display = 'none';
+  };
+
+  // Extract sheet ID from URL
+  sheetInput.addEventListener('input', () => {
+    const match = sheetInput.value.match(/\/d\/([a-zA-Z0-9-_]+)/);
+    sheetId.value = match ? match[1] : '';
+  });
+
+  // Show QR code preview for Google Form link
+  qrInput.addEventListener('input', function () {
+    const qrDiv = document.getElementById('qrPreview');
+    const url = this.value.trim();
+    if (url.startsWith('http')) {
+      qrDiv.innerHTML = `<img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(url)}" alt="QR Preview" />`;
+    } else {
+      qrDiv.innerHTML = '';
+    }
+  });
+
+  searchInput.addEventListener('input', loadEvents);
+  startFilter.addEventListener('change', loadEvents);
+  endFilter.addEventListener('change', loadEvents);
+
+  // ✅ FORM SUBMIT HANDLER
+  form.addEventListener('submit', function (e) {
+    e.preventDefault();
+    const formData = new FormData(form);
+    const eventId = formData.get('event_id');
+    const url = eventId ? 'update_event.php' : 'createevent.php';
+
+    fetch(url, {
+      method: 'POST',
+      body: formData
+    })
+    .then(res => res.json())
+    .then(result => {
+      alert(result.message);
+      if (result.success) {
+        modal.style.display = 'none';
+        loadEvents();
+      }
+    });
+  });
+
+  // 🔃 Load events on first load
+  loadEvents();
+});
+
+
+</script>
+
+
+
+
+</body>
+</html>

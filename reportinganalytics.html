@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>REPORTING AND ANALYTICS</title>
+  <link rel="icon" type="image/png" href="images/LOGOSIRIM.jpg" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet" />
+</head>
+<body class="font-[Poppins] min-h-screen flex bg-gray-100">
+  <!-- Sidebar -->
+  <aside class="w-64 bg-[#003366] text-white p-6 flex flex-col">
+    <div class="flex items-center mb-6">
+      <img src="images/LOGOSIRIM.jpg" alt="SIRIM Logo" class="w-10 h-10 mr-2" />
+      <h2 class="text-sm font-semibold leading-tight">EVENT ATTENDANCE<br>SIRIM BERHAD</h2>
+    </div>
+    <nav class="flex flex-col gap-4 mt-6">
+      <a href="#" class="hover:underline">MAIN</a>
+      <a href="homepage.html" class="hover:underline">HOMEPAGE</a>
+      <a href="logout.php" class="hover:underline">LOG OUT</a>
+    </nav>
+  </aside>
+
+  <!-- Main Content -->
+  <main class="flex-1 flex flex-col bg-white">
+    <header class="text-2xl font-bold px-10 py-6 border-b border-gray-300">
+      REPORTING & ANALYTICS
+    </header>
+
+    <section class="flex-1 flex flex-col items-center justify-center px-6 text-center">
+      <h1 class="text-2xl font-semibold mb-8">REPORTS</h1>
+
+      <div class="flex flex-wrap justify-center gap-6">
+        <a href="viewreport.html">
+          <button class="bg-[#002B5C] text-white px-6 py-3 rounded-lg font-semibold hover:bg-[#004080] transition">
+            VIEW REPORT
+          </button>
+        </a>
+        <a href="generatereport.html">
+          <button class="bg-[#002B5C] text-white px-6 py-3 rounded-lg font-semibold hover:bg-[#004080] transition">
+            GENERATE REPORT
+          </button>
+        </a>
+        <a href="monthlydashboard.php">
+          <button class="bg-[#002B5C] text-white px-6 py-3 rounded-lg font-semibold hover:bg-[#004080] transition">
+            MONTHLY DASHBOARD
+          </button>
+        </a>
+      </div>
+    </section>
+  </main>
+</body>
+</html>
