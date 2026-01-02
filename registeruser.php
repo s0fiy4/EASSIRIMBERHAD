@@ -33,7 +33,7 @@ try {
     $mail->Host = 'smtp.gmail.com';
     $mail->SMTPAuth = true;
     $mail->Username = 'sofiyashukri022@gmail.com'; 
-    $mail->Password = 'wshf wpiv xbjd xpqr'; 
+    $mail->Password = ''; 
     $mail->SMTPSecure = 'tls';
     $mail->Port = 587;
 
@@ -50,3 +50,4 @@ try {
     echo "❌ Email failed: {$mail->ErrorInfo}";
 }
 ?>
+
