@@ -99,7 +99,7 @@ if ($maxCapacity > 0 && ($initialCount + $inserted) >= $maxCapacity) {
         $mail->Host       = 'smtp.gmail.com';
         $mail->SMTPAuth   = true;
         $mail->Username   = 'sofiyashukri022@gmail.com'; 
-        $mail->Password   = 'wshf wpiv xbjd xpqr'; 
+        $mail->Password   = ''; 
         $mail->SMTPSecure = 'tls';
         $mail->Port       = 587;
 
@@ -118,6 +118,7 @@ if ($maxCapacity > 0 && ($initialCount + $inserted) >= $maxCapacity) {
 
 $mysqli->close();
 echo json_encode(['success' => true, 'inserted' => $inserted]);
+
 
 
 
