@@ -70,7 +70,7 @@ try {
     $mail->Host = 'smtp.gmail.com';
     $mail->SMTPAuth = true;
     $mail->Username = 'your@gmail.com'; // Replace with your sender email
-    $mail->Password = 'your-app-password'; // Replace with your Gmail app password
+    $mail->Password = ''; // Replace with your Gmail app password
     $mail->SMTPSecure = 'tls';
     $mail->Port = 587;
 
@@ -89,4 +89,5 @@ try {
     echo "Certificate generated but email failed: {$mail->ErrorInfo}";
 }
 ?>
+
 
