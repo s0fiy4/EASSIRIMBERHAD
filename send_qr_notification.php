@@ -43,7 +43,7 @@ try {
     $mail->Host = 'smtp.gmail.com';       
     $mail->SMTPAuth = true;
     $mail->Username = 'sofiyashukri022@gmail.com';    
-    $mail->Password = 'wshf wpiv xbjd xpqr'; // Store securely
+    $mail->Password = ''; // Store securely
     $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
     $mail->Port = 587;
 
@@ -78,3 +78,4 @@ try {
     echo json_encode(['status' => 'error', 'message' => 'Email error: ' . $mail->ErrorInfo]);
 }
 ?>
+
